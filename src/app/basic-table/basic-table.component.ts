@@ -4,7 +4,7 @@ import { MatPaginator } from '@angular/material';
 import { MatTableDataSource } from '../../lib/table-data-source';
 import { MatGroupBy, Grouping } from '../../lib/groupBy';
 
-import { People, SampleDataService } from '../sample-data.service';
+import { Candidates, SampleDataService } from '../sample-data.service';
 
 @Component({
   selector: 'app-basic-table',
@@ -13,9 +13,9 @@ import { People, SampleDataService } from '../sample-data.service';
 })
 export class BasicTableComponent implements OnInit {
 
-  displayedColumns: string[] = ['surname', 'forename', 'gender', 'ukCity', 'salary', 'department'];
+  displayedColumns: string[] = ['InternalJobInfo', 'Ethnicity', 'EMEA', 'AMEC', 'APAC', 'SWISS'];
 
-  dataSource = new MatTableDataSource<People>();
+  dataSource = new MatTableDataSource<Candidates>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private sampleDataService: SampleDataService,
@@ -24,8 +24,8 @@ export class BasicTableComponent implements OnInit {
 
   ngOnInit() {
     this.dataSource.paginator = this.paginator;
-    this.matGroupBy.grouping = new Grouping(['department', 'salary']);
+    this.matGroupBy.grouping = new Grouping(['InternalJobInfo', 'Ethnicity']);
     this.dataSource.groupBy = this.matGroupBy;
-    this.dataSource.data = this.sampleDataService.people;
+    this.dataSource.data = this.sampleDataService.candidates;
   }
 }
