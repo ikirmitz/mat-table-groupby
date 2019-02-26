@@ -1,16 +1,47 @@
-# mat-table-groupby
+# MatTableGroupby
 
-This is a development of the code created in the two stackblitz projects posted in 
-https://stackoverflow.com/questions/52217179/angular-material-mat-table-row-grouping/52706931#52706931
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.8.
 
-I've suggested that it be included in material2/src/lib/table/table-data-source.ts like the sort 
-and paginate features (see https://github.com/angular/material2/issues/10660)
 
-This is now implemented in a copy of the MatTableDataSource class. It plays nicely with the 
-existing filter and sort features, but not quite as nicely with the paginate feature because they 
-are serving a similar purpose.
+# Grouping and pagination
 
-The pagination occurs before the grouping. This means that only groups revelant to the page are 
-displayed (though at least one from each level). However, if all the rows on a page fall into one 
-group and that group is collapsed then you will see no rows on the page. If there are many pages 
-rows in this collapsed group then you will need to page through them all to see the next data row.
+Both grouping and pagination serve a similar purpose, they hide redundant rows so the user can see 
+a smaller view of the data, both for speed and information overload purposes. Because of this 
+shared purpose they somewhat conflict. 
+
+See (https://ux.stackexchange.com/questions/23529/what-is-the-expected-paging-behavior-of-a-tree)
+
+
+First option is paginate then group, this will take a page of data from the set and apply grouping 
+at that level
+
+* Pro: Group headers back to root are shown from the top of the page
+
+* Con: Group headers add to the number of rows displayed, each page could be a different size 
+depending on how many groups it included
+
+* Pro: The count in the ui's paginator shows the correct number of records in the data
+
+* Con: Collapse a group on page one it remains collapsed on others, if you have a group that is 
+much bigger than the page you may need to move hrough many paged to see the next data row.
+
+
+Second option is group then paginate, this will group the data then slice pages out of the groups.
+
+* Pro: Page size is always the same, be they data or group rows.
+
+* Con: The count of rows includes any groups added by the system.
+
+* Pro: Collapse a group and the next group is pulled in below it as long as there is space on the 
+page. 
+
+* Con: The first row may be a data row from a group on an earlier page. 
+
+* Con: The row count changes as you expand and collapse rows. 
+
+* Con: If the user loads partial data i.e. they load the first 3 pages ofdtat from the server, then
+when the user goes to page 4 and the system downloads more data the rows may be added to groups 
+that aren't on the screen. (However, the data should have been sorted properly first.)
+
+
+
