@@ -6,8 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import {_isNumberValue} from '@angular/cdk/coercion';
-import {DataSource} from '@angular/cdk/table';
+import { _isNumberValue } from '@angular/cdk/coercion';
+import { DataSource } from '@angular/cdk/table';
 import {
   BehaviorSubject,
   combineLatest,
@@ -16,9 +16,9 @@ import {
   of as observableOf,
   Subscription
 } from 'rxjs';
-import {MatPaginator, PageEvent} from '@angular/material/paginator';
-import {MatSort, Sort} from '@angular/material/sort';
-import {map} from 'rxjs/operators';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSort, Sort } from '@angular/material/sort';
+import { map } from 'rxjs/operators';
 import { MatGroupBy, Grouping, Group } from './groupBy';
 
 /**
@@ -75,11 +75,11 @@ export class MatTableDataSource<T> extends DataSource<(T | Group)> {
    * emitted by the MatSort will trigger an update to the table's rendered data.
    */
   get sort(): MatSort | null { return this._sort; }
-  set sort(sort: MatSort|null) {
+  set sort(sort: MatSort | null) {
     this._sort = sort;
     this._updateChangeSubscription();
   }
-  private _sort: MatSort|null;
+  private _sort: MatSort | null;
 
   /**
    * Instance of the MatPaginator component used by the table to control what page of the data is
@@ -92,22 +92,22 @@ export class MatTableDataSource<T> extends DataSource<(T | Group)> {
    * initialized before assigning it to this data source.
    */
   get paginator(): MatPaginator | null { return this._paginator; }
-  set paginator(paginator: MatPaginator|null) {
+  set paginator(paginator: MatPaginator | null) {
     this._paginator = paginator;
     this._updateChangeSubscription();
   }
-  private _paginator: MatPaginator|null;
+  private _paginator: MatPaginator | null;
 
   /**
    * Instance of the MatGroupBy component used to add group headers to the data. Grouping changes
    * emitted by the MatGroupBy will trigger an update to the table's rendered data.
    */
-  get groupBy(): MatGroupBy|null { return this._groupBy; }
-  set groupBy(groupBy: MatGroupBy|null) {
+  get groupBy(): MatGroupBy | null { return this._groupBy; }
+  set groupBy(groupBy: MatGroupBy | null) {
     this._groupBy = groupBy;
     this._updateChangeSubscription();
   }
-  private _groupBy: MatGroupBy|null;
+  private _groupBy: MatGroupBy | null;
 
   /**
    * Data accessor function that is used for accessing data properties for sorting through
@@ -118,20 +118,20 @@ export class MatTableDataSource<T> extends DataSource<(T | Group)> {
    * @param data Data object that is being accessed.
    * @param sortHeaderId The name of the column that represents the data.
    */
-  sortingDataAccessor: ((data: T, sortHeaderId: string) => string|number) =
-      (data: T, sortHeaderId: string): string|number => {
-    const value = (data as {[key: string]: any})[sortHeaderId];
+  sortingDataAccessor: ((data: T, sortHeaderId: string) => string | number) =
+    (data: T, sortHeaderId: string): string | number => {
+      const value = (data as { [key: string]: any })[sortHeaderId];
 
-    if (_isNumberValue(value)) {
-      const numberValue = Number(value);
+      if (_isNumberValue(value)) {
+        const numberValue = Number(value);
 
-      // Numbers beyond `MAX_SAFE_INTEGER` can't be compared reliably so we
-      // leave them as strings. For more info: https://goo.gl/y5vbSg
-      return numberValue < MAX_SAFE_INTEGER ? numberValue : value;
+        // Numbers beyond `MAX_SAFE_INTEGER` can't be compared reliably so we
+        // leave them as strings. For more info: https://goo.gl/y5vbSg
+        return numberValue < MAX_SAFE_INTEGER ? numberValue : value;
+      }
+
+      return value;
     }
-
-    return value;
-  }
 
   /**
    * Gets a sorted copy of the data array based on the state of the MatSort. Called
@@ -143,6 +143,7 @@ export class MatTableDataSource<T> extends DataSource<(T | Group)> {
    * @param sort The connected MatSort that holds the current sort state.
    */
   sortData: ((data: T[], sort: MatSort) => T[]) = (data: T[], sort: MatSort): T[] => {
+    console.log("I'm sorting");
     const active = sort.active;
     const direction = sort.direction;
     if (!active || direction == '') { return data; }
@@ -186,7 +187,7 @@ export class MatTableDataSource<T> extends DataSource<(T | Group)> {
   filterPredicate: ((data: T, filter: string) => boolean) = (data: T, filter: string): boolean => {
     // Transform the data into a lowercase string of all property values.
     const accumulator =
-        (currentTerm: string, key: string) => currentTerm + (data as {[key: string]: any})[key];
+      (currentTerm: string, key: string) => currentTerm + (data as { [key: string]: any })[key];
     const dataStr = Object.keys(data).reduce(accumulator, '').toLowerCase();
 
     // Transform the filter by converting it to lowercase and removing whitespace.
@@ -213,13 +214,13 @@ export class MatTableDataSource<T> extends DataSource<(T | Group)> {
     // The `sortChange` and `pageChange` acts as a signal to the combineLatests below so that the
     // pipeline can progress to the next step. Note that the value from these streams are not used,
     // they purely act as a signal to progress in the pipeline.
-    const sortChange: Observable<Sort|null|void> = this._sort ?
-        merge<Sort|void>(this._sort.sortChange, this._sort.initialized) :
-        observableOf(null);
-    const pageChange: Observable<PageEvent|null|void> = this._paginator ?
-        merge<PageEvent|void>(this._paginator.page, this._paginator.initialized) :
-        observableOf(null);
-    const groupChange: Observable<Grouping|null|void> = this._groupBy ?
+    const sortChange: Observable<Sort | null | void> = this._sort ?
+      merge<Sort | void>(this._sort.sortChange, this._sort.initialized) :
+      observableOf(null);
+    const pageChange: Observable<PageEvent | null | void> = this._paginator ?
+      merge<PageEvent | void>(this._paginator.page, this._paginator.initialized) :
+      observableOf(null);
+    const groupChange: Observable<Grouping | null | void> = this._groupBy ?
       this._groupBy.groupingChange :
       observableOf(null);
 
@@ -251,7 +252,7 @@ export class MatTableDataSource<T> extends DataSource<(T | Group)> {
     // Each data object is converted to a string using the function defined by filterTermAccessor.
     // May be overridden for customization.
     this.filteredData =
-        !this.filter ? data : data.filter(obj => this.filterPredicate(obj, this.filter));
+      !this.filter ? data : data.filter(obj => this.filterPredicate(obj, this.filter));
 
     if (this.paginator) { this._updatePaginator(this.filteredData.length); }
 

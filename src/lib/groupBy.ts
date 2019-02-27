@@ -32,6 +32,7 @@ export class MatGroupBy {
   }
 
   public toggleExpanded(row) {
+    console.log('ROW', row);
     row.expanded = !row.expanded;
     this.groupingChange.next(this.grouping);
   }
@@ -92,7 +93,7 @@ export class MatGroupBy {
 
   private uniqueBy(a, key) {
     const seen = {};
-    return a.filter(function (item) {
+    return a.filter(function(item) {
       const k = key(item);
       return seen.hasOwnProperty(k) ? false : (seen[k] = true);
     });
@@ -140,6 +141,7 @@ export class Grouping {
     return 0;
   }
 }
+
 export class Group {
   level = 0;
   name: string;

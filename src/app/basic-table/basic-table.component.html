@@ -1,50 +1,37 @@
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<mat-form-field>
+  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+</mat-form-field>
 
-  <ng-container matColumnDef="InternalJobInfo">
-    <th mat-header-cell *matHeaderCellDef> Internal Job Info - Department "Combo" </th>
-    <td mat-cell *matCellDef="let element"> {{element.InternalJobInfo}} </td>
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+  <ng-container *ngFor="let column of columns" [matColumnDef]="column.columnDef">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ column.header }}</th>
+    <td mat-cell *matCellDef="let row">
+      <span *ngIf="!column.group">{{ column.cell(row) }}
+      </span>
+    </td>
   </ng-container>
 
-  <ng-container matColumnDef="Ethnicity">
-    <th mat-header-cell *matHeaderCellDef> Ethnicity </th>
-    <td mat-cell *matCellDef="let element"> {{element.Ethnicity}} </td>
-  </ng-container>
 
-  <ng-container matColumnDef="EMEA">
-    <th mat-header-cell *matHeaderCellDef> EMEA </th>
-    <td mat-cell *matCellDef="let element"> {{element.EMEA}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="AMEC">
-    <th mat-header-cell *matHeaderCellDef> AMEC </th>
-    <td mat-cell *matCellDef="let element"> {{element.AMEC}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="APAC">
-    <th mat-header-cell *matHeaderCellDef> APAC </th>
-    <td mat-cell *matCellDef="let element"> {{element.APAC}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="SWISS">
-    <th mat-header-cell *matHeaderCellDef> SWISS </th>
-    <td mat-cell *matCellDef="let element"> {{element.SWISS}} </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
   <!-- Group header -->
   <ng-container matColumnDef="groupHeader">
-    <td colspan="999" mat-cell *matCellDef="let group">
-      <mat-icon [style.paddingLeft.ex]="((group.level-1) * 1)" style="padding-right: 1ex;">
-        {{group.expanded ? 'expand_less' : 'expand_more'}}
+    <th mat-cell [attr.colspan]="group.level" *matCellDef="let group">
+      <mat-icon>
+        {{group.expanded ? 'arrow_drop_down' : 'arrow_right'}}
       </mat-icon>
-      <strong>{{group.name}} = {{group.value}}</strong>
-    </td>
+      {{group.value}}
+    </th>
   </ng-container>
 
-  <tr mat-row *matRowDef="let row; columns: ['groupHeader']; when: matGroupBy.isGroup" (click)="matGroupBy.toggleExpanded(row)"> </tr>
+  <ng-container matColumnDef="emptyGroupHeader">
+    <th mat-cell *matCellDef="let column"></th>
+  </ng-container>
+
+  <tr mat-row *matRowDef="let row; columns: ['groupHeader']; when: matGroupBy.isGroup;" (click)="matGroupBy.toggleExpanded(row)"> </tr>
 
 </table>
 
-<mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+<mat-paginator [pageSize]="100" [pageSizeOptions]="[25, 50, 100]" showFirstLastButtons></mat-paginator>
