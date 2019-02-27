@@ -27,7 +27,7 @@ export class BasicTableComponent implements OnInit {
   }
 
   constructor(private sampleDataService: SampleDataService,
-    private matGroupBy: MatGroupBy,
+    public matGroupBy: MatGroupBy,
   ) { }
 
   getDisplayedColumns(): string[] {
